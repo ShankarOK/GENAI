@@ -149,7 +149,7 @@ main {
     </div>
     
     <script>
-       document.addEventListener('DOMContentLoaded', function() {
+      document.addEventListener('DOMContentLoaded', function() {
     // DOM Elements
     const programIndicator = document.getElementById('program-indicator');
     const programContent = document.getElementById('program-content');
@@ -161,6 +161,10 @@ main {
     // Current program tracking
     let currentProgramIndex = 0;
     const totalPrograms = 9;
+    
+    // Touch tracking for swipe detection
+    let touchStartX = 0;
+    let touchEndX = 0;
     
     // Program data
     const programs = {
@@ -591,6 +595,31 @@ chatbot()
         }
     });
     
+    // Swipe gesture detection for mobile
+    document.addEventListener('touchstart', function(event) {
+        touchStartX = event.changedTouches[0].screenX;
+    }, false);
+    
+    document.addEventListener('touchend', function(event) {
+        touchEndX = event.changedTouches[0].screenX;
+        handleSwipe();
+    }, false);
+    
+    function handleSwipe() {
+        const swipeThreshold = 50; // Minimum distance for a swipe
+        const swipeDistance = touchEndX - touchStartX;
+        
+        if (swipeDistance > swipeThreshold) {
+            // Swipe right - go to previous program
+            currentProgramIndex = (currentProgramIndex - 1 + totalPrograms) % totalPrograms;
+            displayProgram(currentProgramIndex);
+        } else if (swipeDistance < -swipeThreshold) {
+            // Swipe left - go to next program
+            currentProgramIndex = (currentProgramIndex + 1) % totalPrograms;
+            displayProgram(currentProgramIndex);
+        }
+    }
+    
     // Copy button functionality
     copyBtn.addEventListener('click', function() {
         // Use the stored raw code for copying
@@ -605,6 +634,7 @@ chatbot()
         });
     });
 }); 
+
  
     </script>
 </body>
