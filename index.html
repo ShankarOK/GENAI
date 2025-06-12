@@ -431,10 +431,10 @@ print("Enriched:", ep)
 
 gen = pipeline("text-generation", model="gpt2")
 
-print("\nOriginal Response:\n")
+print("\\nOriginal Response:\\n")
 print(gen(op, max_length=100)[0]["generated_text"])
 
-print("\nEnriched Response:\n")
+print("\\nEnriched Response:\\n")
 print(gen(ep)[0]["generated_text"])
 \`\`\``
             }
@@ -538,7 +538,7 @@ feedbacks = [
     "The product is amazing! I love it!",
     "Terrible service, I am very disappointed.",
     "This is a great experience, I will buy again.",
-    "Worst purchase I’ve ever made. Completely dissatisfied.",
+    "Worst purchase I've ever made. Completely dissatisfied.",
     "I'm happy with the quality, but the delivery was delayed."
 ]
 
@@ -676,7 +676,7 @@ class Info(BaseModel):
     summary: str
 
 def get_line(text, keyword):
-    return next((line for line in text.split('\n') if keyword in line.lower()), "Not available")
+    return next((line for line in text.split('\\n') if keyword in line.lower()), "Not available")
 
 def fetch(name):
     wiki = wikipediaapi.Wikipedia(
@@ -694,7 +694,7 @@ def fetch(name):
         founded=get_line(txt, "founded") or get_line(txt, "established"),
         branches=get_line(txt, "branch"),
         employees=get_line(txt, "employee"),
-        summary="\n".join(txt.split('\n')[:3])
+        summary="\\n".join(txt.split('\\n')[:3])
     )
 
 # Run it
@@ -767,7 +767,7 @@ def extract(file):
 
 def search(query, text):
     query = query.lower()
-    lines = text.split('\n')
+    lines = text.split('\\n')
     results = []
     for line in lines:
         if query in line.lower():
@@ -781,7 +781,7 @@ def chatbot():
         if query.lower() == "exit":
             print("Goodbye!")
             break
-        print("\n".join(search(query, ipc)))
+        print("\\n".join(search(query, ipc)))
         print("-" * 50)
 
 chatbot()
@@ -811,8 +811,15 @@ chatbot()
         
         if (codeMatch) {
             // Extract the code and description
-            const code = codeMatch[1];
+            let code = codeMatch[1];
             const description = rawContent.substring(0, codeMatch.index).trim();
+            
+            // Fix any unescaped newlines and other escape sequences in code 
+            // This ensures they are displayed literally and copied correctly
+            // First, replace any escaped newlines that aren't already double-escaped
+            code = code.replace(/([^\\])\\n/g, '$1\\\\n');
+            // Also catch any \n at the beginning of a line
+            code = code.replace(/^\\n/gm, '\\\\n');
             
             // Store raw code for copy functionality
             rawCodeContent = code;
