@@ -767,8 +767,11 @@ def extract(file):
 
 def search(query, text):
     query = query.lower()
-    results = [line for line in text.split("\n") if query in line.lower()]
-    return results or ["No relevant section found."]
+    lines = text.split('\n')
+    results = []
+    for line in lines:
+        if query in line.lower():
+            results.append(line)
 
 def chatbot():
     print("Loading IPC...")
