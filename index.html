@@ -4,9 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GenAI Lab Programs</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-    /* Dark Mode Theme - Deeper Dark */
+        /* Dark Mode Theme - Deeper Dark */
 :root {
     --bg-color: #0d1117;
     --text-color: #e6edf3;
@@ -116,6 +115,13 @@ main {
     overflow: auto;
     box-sizing: border-box;
     font-size: 15px;
+    cursor: pointer;
+    user-select: text;
+    transition: background-color 0.2s;
+}
+
+#program-content:hover {
+    background-color: #141a21;
 }
 
 /* Responsive adjustments */
@@ -133,23 +139,24 @@ main {
         height: 32px;
         font-size: 14px;
     }
-}      
+} 
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <div class="container">
         <div class="program-selection">
-            <div id="program-indicator">Program 1/9</div>
+            <div id="program-indicator">Program 1/9 (V1)</div>
             <button id="copy-btn" class="copy-btn" title="Copy Code"><i class="fas fa-copy"></i></button>
         </div>
         
         <main>
-            <pre id="program-content">// Select a program to view its code</pre>
+            <pre id="program-content" title="Double-click to toggle between versions">// Select a program to view its code</pre>
         </main>
     </div>
     
     <script>
-      document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function() {
     // DOM Elements
     const programIndicator = document.getElementById('program-indicator');
     const programContent = document.getElementById('program-content');
@@ -161,6 +168,8 @@ main {
     // Current program tracking
     let currentProgramIndex = 0;
     const totalPrograms = 9;
+    // Track current version (1 or 2)
+    let currentVersion = 1;
     
     // Touch tracking for swipe detection
     let touchStartX = 0;
@@ -170,7 +179,8 @@ main {
     const programs = {
         program1: {
             title: "Program 1: Word Embeddings with GloVe",
-            content: `# Word Embeddings with GloVe
+            v1: {
+                content: `# Word Embeddings with GloVe (Version 1)
 
 This program demonstrates the use of pre-trained GloVe word embeddings for word relationship analysis.
 
@@ -200,10 +210,21 @@ def ewr():
 
 ewr()
 \`\`\``
+            },
+            v2: {
+                content: `# Word Embeddings with GloVe (Version 2)
+
+This program demonstrates an alternative approach to using pre-trained GloVe word embeddings.
+
+\`\`\`python
+double click
+\`\`\``
+            }
         },
         program2: {
             title: "Program 2: Word Embeddings Visualization with PCA",
-            content: `# Word Embeddings Visualization with PCA
+            v1: {
+                content: `# Word Embeddings Visualization with PCA (Version 1)
 
 This program demonstrates dimensionality reduction and visualization of word embeddings using PCA.
 
@@ -243,10 +264,34 @@ e = rd(ems)
 visualize(words, e)
 gsm("programming")
 \`\`\``
+            },
+            v2: {
+                content: `# Word Embeddings Visualization with PCA (Version 2)
+
+This program demonstrates an alternative approach to dimensionality reduction and visualization.
+
+\`\`\`python
+from gensim.downloader import load
+from sklearn.decomposition import PCA
+import matplotlib.pyplot as plt
+
+model=load("glove-wiki-gigaword-50")
+words = ['football', 'basketball', 'soccer', 'tennis', 'cricket']
+vecs=PCA(2).fit_transform([model[x] for x in words])
+for (x, y), word in zip(vecs, words):
+    plt.scatter(x,y)
+    plt.text(x+0.02, y+0.02, word)
+plt.show()
+
+for word, similarity in model.most_similar("programming", topn=5):
+    print(word, similarity)
+\`\`\``
+            }
         },
         program3: {
             title: "Program 3: Custom Word2Vec Model",
-            content: `# Custom Word2Vec Model
+            v1: {
+                content: `# Custom Word2Vec Model (Version 1)
 
 This program demonstrates training a custom Word2Vec model on a small domain-specific corpus.
 
@@ -286,10 +331,41 @@ anal(model, "patient")
 print("Analysis for word court")
 anal(model, "court")
 \`\`\``
+            },
+            v2: {
+                content: `# Custom Word2Vec Model (Version 2)
+
+This program demonstrates an alternative approach to training a custom Word2Vec model.
+
+\`\`\`python
+from gensim.models import Word2Vec
+
+corpus=[
+    "The patient was prescribed antibiotics to treat the infection.".split(),
+    "The court ruled in favor of the defendant after reviewing the evidence.".split(),
+    "Diagnosis of diabetes mellitus requires specific blood tests.".split(),
+    "The legal contract must be signed in the presence of a witness.".split(),
+    "Symptoms of the disease include fever, cough, and fatigue.".split(),
+    "The patient was advised to follow a strict diet and exercise regimen.".split(),
+    "The judge delivered a verdict based on the presented facts.".split(),
+    "Early detection of cancer can significantly improve treatment outcomes.".split(),
+    "The lawyer prepared the case meticulously for the upcoming trial.".split(),
+]
+
+model= Word2Vec(corpus, vector_size=50, epochs=10, min_count=1)
+
+for word in ["patient", "court"]:
+    print(f"Similar words to '{word}':")
+    for word, similarity in model.wv.most_similar(word, topn=5):
+        print(f"{word}: {similarity}")
+    print()
+\`\`\``
+            }
         },
         program4: {
             title: "Program 4: Contextual Word Enrichment",
-            content: `# Contextual Word Enrichment
+            v1: {
+                content: `# Contextual Word Enrichment (Version 1)
 
 This program demonstrates how to enrich prompts with contextually relevant words and compare generation results.
 
@@ -328,10 +404,45 @@ print("\\n\\nPrompt response\\n",response[0]["generated_text"])
 response = generator(ep, max_length=200, num_return_sequences=1, no_repeat_ngram_size=2) #top_p=0.95, temperature=0.7)
 print("\\n\\nEnriched prompt response\\n",response[0]["generated_text"])
 \`\`\``
+            },
+            v2: {
+                content: `# Contextual Word Enrichment (Version 2)
+
+This program demonstrates an alternative approach to enriching prompts with contextually relevant words.
+
+\`\`\`python
+from gensim.downloader import load
+from transformers import pipeline
+
+model = load("glove-wiki-gigaword-50")
+
+# Enrich the input prompt with similar words
+def enrich(prompt):
+    sw = prompt.split()
+    for word in prompt.split():
+            sw += [w for w, _ in model.most_similar(word, topn=3)]
+    return " ".join(sw)
+
+op = "lung cancer"
+ep = enrich(op)
+
+print("Original:", op)
+print("Enriched:", ep)
+
+gen = pipeline("text-generation", model="gpt2")
+
+print("\nOriginal Response:\n")
+print(gen(op, max_length=100)[0]["generated_text"])
+
+print("\nEnriched Response:\n")
+print(gen(ep)[0]["generated_text"])
+\`\`\``
+            }
         },
         program5: {
             title: "Program 5: Paragraph Generation with Word Embeddings",
-            content: `# Paragraph Generation with Word Embeddings
+            v1: {
+                content: `# Paragraph Generation with Word Embeddings (Version 1)
 
 This program demonstrates generating a meaningful paragraph using similar words from word embeddings.
 
@@ -360,10 +471,29 @@ words = [word for word, s in sws]
 paragraph = create_paragraph(iw, words)
 print(paragraph)
 \`\`\``
+            },
+            v2: {
+                content: `# Paragraph Generation with Word Embeddings (Version 2)
+
+This program demonstrates an alternative approach to paragraph generation using word embeddings.
+
+\`\`\`python
+from gensim.downloader import load
+import random
+
+model = load("glove-wiki-gigaword-50")
+iw = "cricket"
+words = [w for w, _ in model.most_similar(iw, topn=50)]
+random.shuffle(words)
+para = f"The topic of {iw} is fascinating, often linked to terms like {', '.join(words)}."
+print(para)
+\`\`\``
+            }
         },
         program6: {
             title: "Program 6: Sentiment Analysis",
-            content: `# Sentiment Analysis
+            v1: {
+                content: `# Sentiment Analysis (Version 1)
 
 This program demonstrates sentiment analysis on customer feedback using a pre-trained model.
 
@@ -393,10 +523,35 @@ for feedback in customer_feedback:
     print(f"Feedback is: {feedback}")
     print(f"Sentiment is: {sentiment_label} (Confidence: {sentiment_score:.2f})\\n")
 \`\`\``
+            },
+            v2: {
+                content: `# Sentiment Analysis (Version 2)
+
+This program demonstrates an alternative approach to sentiment analysis using a different model.
+
+\`\`\`python
+from transformers import pipeline
+
+analyze = pipeline("sentiment-analysis", model="distilbert/distilbert-base-uncased-finetuned-sst-2-english")
+
+feedbacks = [
+    "The product is amazing! I love it!",
+    "Terrible service, I am very disappointed.",
+    "This is a great experience, I will buy again.",
+    "Worst purchase I’ve ever made. Completely dissatisfied.",
+    "I'm happy with the quality, but the delivery was delayed."
+]
+
+for fb in feedbacks:
+    result = analyze(fb)[0]
+    print(f"Feedback: {fb}\nSentiment: {result['label']} (Confidence: {result['score']:.2f})\n")
+\`\`\``
+            }
         },
         program7: {
             title: "Program 7: Text Summarization",
-            content: `# Text Summarization
+            v1: {
+                content: `# Text Summarization (Version 1)
 
 This program demonstrates automatic text summarization using a pre-trained model.
 
@@ -431,12 +586,24 @@ summarized_text = summarize_text(text)
 print("Original Text:\\n", text)
 print("\\nSummarized Text:\\n", summarized_text)
 \`\`\``
+            },
+            v2: {
+                content: `# Text Summarization (Version 2)
+
+This program demonstrates an alternative approach to text summarization using a different technique.
+
+\`\`\`python
+# Program 7 Version 2 placeholder
+# Alternative Text Summarization
+\`\`\``
+            }
         },
         program8: {
             title: "Program 8: Institution Details Extractor",
-            content: `# Institution Details Extractor
+            v1: {
+                content: `# Institution Details Extractor (Version 1)
 
-This program demonstrates extracting information about institutions from Wikipedia using Pydantic for data validation.
+This program demonstrates extracting information about institutions from Wikipedia using Pydantic.
 
 \`\`\`python
 from pydantic import BaseModel
@@ -490,10 +657,56 @@ details = fetch("PESITM")
 print("\\nExtracted Institution Details:")
 print(details.model_dump_json(indent=4))
 \`\`\``
+            },
+            v2: {
+                content: `# Institution Details Extractor (Version 2)
+
+This program demonstrates an alternative approach to extracting institution details from Wikipedia.
+
+\`\`\`python
+from pydantic import BaseModel
+import wikipediaapi
+
+class Info(BaseModel):
+    name: str
+    founder: str
+    founded: str
+    branches: str
+    employees: str
+    summary: str
+
+def get_line(text, keyword):
+    return next((line for line in text.split('\n') if keyword in line.lower()), "Not available")
+
+def fetch(name):
+    wiki = wikipediaapi.Wikipedia(
+        language='en',
+        headers={"User-Agent": "MySimpleFetcher/1.0 (contact@example.com)"}
+    )
+    page = wiki.page(name)
+    if not page.exists():
+        raise ValueError(f"No page found for '{name}'")
+
+    txt = page.text
+    return Info(
+        name=name,
+        founder=get_line(txt, "founder"),
+        founded=get_line(txt, "founded") or get_line(txt, "established"),
+        branches=get_line(txt, "branch"),
+        employees=get_line(txt, "employee"),
+        summary="\n".join(txt.split('\n')[:3])
+    )
+
+# Run it
+print(fetch("VTU").model_dump_json(indent=2))
+
+\`\`\``
+            }
         },
         program9: {
             title: "Program 9: IPC PDF Chatbot",
-            content: `# IPC PDF Chatbot
+            v1: {
+                content: `# IPC PDF Chatbot (Version 1)
 
 This program demonstrates a simple chatbot that can search and retrieve information from an IPC PDF document.
 
@@ -539,23 +752,56 @@ def chatbot():
 
 chatbot()
 \`\`\``
+            },
+            v2: {
+                content: `# IPC PDF Chatbot (Version 2)
+
+This program demonstrates an alternative approach to creating a chatbot for IPC PDF documents.
+
+\`\`\`python
+import fitz  # PyMuPDF
+
+def extract(file):
+    with fitz.open(file) as pdf:
+        return "".join(page.get_text() for page in pdf)
+
+def search(query, text):
+    query = query.lower()
+    results = [line for line in text.split("\n") if query in line.lower()]
+    return results or ["No relevant section found."]
+
+def chatbot():
+    print("Loading IPC...")
+    ipc = extract("IPC.pdf")
+    while True:
+        query = input("Ask about IPC (type 'exit' to quit): ").strip()
+        if query.lower() == "exit":
+            print("Goodbye!")
+            break
+        print("\n".join(search(query, ipc)))
+        print("-" * 50)
+
+chatbot()
+\`\`\``
+            }
         }
     };
     
     // Initialize with program1
-    displayProgram(currentProgramIndex);
+    displayProgram(currentProgramIndex, currentVersion);
     
     // Functions
-    function displayProgram(index) {
+    function displayProgram(index, version) {
         // Convert index to program ID
         const programId = `program${index + 1}`;
         const program = programs[programId];
+        const versionKey = `v${version}`;
         
         // Update the program indicator
-        programIndicator.textContent = `Program ${index + 1}/${totalPrograms}`;
+        programIndicator.textContent = `Program ${index + 1}/${totalPrograms} (V${version})`;
         
         // Get the raw content and parse for display
-        const rawContent = program.content;
+        const rawContent = program[versionKey].content;
         
         // Split content into parts (description and code)
         const codeMatch = rawContent.match(/```python\n([\s\S]*?)```/);
@@ -579,18 +825,25 @@ chatbot()
         }
     }
     
+    // Double click to toggle between versions
+    programContent.addEventListener('dblclick', function() {
+        // Toggle between version 1 and 2
+        currentVersion = currentVersion === 1 ? 2 : 1;
+        displayProgram(currentProgramIndex, currentVersion);
+    });
+    
     // Arrow key navigation
     document.addEventListener('keydown', function(event) {
         // Handle arrow keys
         if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
             // Next program
             currentProgramIndex = (currentProgramIndex + 1) % totalPrograms;
-            displayProgram(currentProgramIndex);
+            displayProgram(currentProgramIndex, currentVersion);
             event.preventDefault();
         } else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
             // Previous program
             currentProgramIndex = (currentProgramIndex - 1 + totalPrograms) % totalPrograms;
-            displayProgram(currentProgramIndex);
+            displayProgram(currentProgramIndex, currentVersion);
             event.preventDefault();
         }
     });
@@ -612,11 +865,11 @@ chatbot()
         if (swipeDistance > swipeThreshold) {
             // Swipe right - go to previous program
             currentProgramIndex = (currentProgramIndex - 1 + totalPrograms) % totalPrograms;
-            displayProgram(currentProgramIndex);
+            displayProgram(currentProgramIndex, currentVersion);
         } else if (swipeDistance < -swipeThreshold) {
             // Swipe left - go to next program
             currentProgramIndex = (currentProgramIndex + 1) % totalPrograms;
-            displayProgram(currentProgramIndex);
+            displayProgram(currentProgramIndex, currentVersion);
         }
     }
     
@@ -635,7 +888,6 @@ chatbot()
     });
 }); 
 
- 
     </script>
 </body>
 </html> 
